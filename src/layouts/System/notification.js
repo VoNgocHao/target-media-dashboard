@@ -1,318 +1,198 @@
+import React, { useState, useEffect } from "react";
 import Footer from "../Components/footer";
 import Header from "../Components/header";
 import NavBar from "../Components/navbar";
+import Paginator from "../Components/paginato";
+// import { useHistory } from "react-router-dom";
+import * as Icon from "react-feather";
+import { caculatePage, caculateOffSet } from "../helper";
+import Loading from "../Components/loading";
+import Confirm from "../Components/confirm";
+import { toast } from "react-toastify";
+// import API from "../api";
+import CreateNotification from "../Components/create-notification";
 
-function Permissions() {
+function Notification() {
+  document.title = "Notification";
+  // let history = useHistory();
+  const [notifications, setNotifications] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [idDeleted, setIdDeleted] = useState("");
+  const [isCreate, setIsCreate] = useState(false);
+  const [idDetail, setIdDetail] = useState("");
+  const [page, setPage] = useState({
+    page: 0,
+    size: 10,
+    totalPages: 10,
+  });
+  const size = 10;
+  useEffect(() => {
+    setIsLoading(true);
+    getNotifications(1, "");
+    setIsLoading(false);
+  }, []);
+
+  const getNotifications = async (page) => {
+    let url = `/notifications.php?offset=${caculateOffSet(
+      page,
+      size
+    )}&size=${size}`;
+
+    const res = await fetch(url).then((response) => response.json());
+
+    if (res.success) {
+      setNotifications(res.data);
+      setPage({
+        page: page,
+        size: size,
+        totalPages: caculatePage(res.total, size),
+      });
+    } else {
+      setNotifications([]);
+      setPage({
+        page: 0,
+        size: 0,
+        totalPages: 0,
+      });
+    }
+  };
+
+  const onPageChange = (newPage) => {
+    setPage({ ...page, page: newPage });
+    getNotifications(newPage);
+  };
+
+  // const onConfirmDelete = (id) => {
+  //   setIdDeleted(id);
+  // };
+
+  const onSetIdDeleteNull = () => {
+    setIdDeleted("");
+  };
+  const onDeleteUser = async () => {
+    setIsLoading(true);
+    const res = await fetch(
+      "delete-user.php?id=" + idDeleted
+    ).then((response) => response.json());
+    onSetIdDeleteNull();
+    if (res.success) {
+      toast.success("Deleted successfully!");
+      getNotifications(1, "");
+    } else {
+      toast.error(res.message);
+    }
+    setIsLoading(false);
+  };
+
+  const onOpenCreate = (id) => {
+    setIdDetail(id);
+
+    setIsCreate(!isCreate);
+  };
+
+  const onConfirmNotification = () => {
+    onOpenCreate();
+    getNotifications(1, "");
+  };
   return (
     <section>
       <NavBar />
       <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <Header title="Users" />
+        <Header title="Notification" />
         <div className="container-fluid py-2">
+          {isLoading && <Loading />}
+
           <div className="row">
+            <div className="row my-2">
+              <div className="col-md-12">
+                <button
+                  className="badge badge-sm btn-background-violet float-right"
+                  onClick={() => onOpenCreate()}
+                >
+                  <span className="px-2">
+                    <Icon.Plus size={15} /> Create
+                  </span>
+                </button>
+              </div>
+            </div>
             <div className="col-12">
-              <div className="card my-4">
-                <div className="card-body px-0 pb-2">
+              <div className="card">
+                <div className="card-body px-0 pt-0">
                   <div className="table-responsive p-0">
                     <table className="table align-items-center mb-0">
                       <thead>
                         <tr>
-                          <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                            Author
+                          <th className="text-uppercase text-xxs font-weight-bolder">
+                            Title
                           </th>
-                          <th className="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                            Function
+                          <th className="text-uppercase text-xxs font-weight-bolder ps-2">
+                            Content
                           </th>
-                          <th className="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                            Status
+                          <th className="text-uppercase text-xxs font-weight-bolder ps-2">
+                            Created at
                           </th>
-                          <th className="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                            Employed
+                          <th className="text-center text-uppercase text-xxs font-weight-bolder">
+                            Action
                           </th>
-                          <th className="text-secondary opacity-7"></th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>
-                            <div className="d-flex px-2 py-1">
-                              <div>
-                                <img
-                                  src="./Users/mb-eq-215/Documents/TrangTran/target-media-dashboard/src/img/team-2.jpg"
-                                  className="avatar avatar-sm me-3 border-radius-lg"
-                                  alt="user1"
-                                />
-                              </div>
-                              <div className="d-flex flex-column justify-content-center">
-                                <h6 className="mb-0 text-sm">John Michael</h6>
-                                <p className="text-xs text-secondary mb-0">
-                                  john@creative-tim.com
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <p className="text-xs font-weight-bold mb-0">
-                              Manager
-                            </p>
-                            <p className="text-xs text-secondary mb-0">
-                              Organization
-                            </p>
-                          </td>
-                          <td className="align-middle text-center text-sm">
-                            <span className="badge badge-sm bg-gradient-success">
-                              Online
-                            </span>
-                          </td>
-                          <td className="align-middle text-center">
-                            <span className="text-secondary text-xs font-weight-bold">
-                              23/04/18
-                            </span>
-                          </td>
-                          <td className="align-middle">
-                            <a
-                              className="text-secondary font-weight-bold text-xs"
-                              data-toggle="tooltip"
-                              data-original-title="Edit user"
-                            >
-                              Edit
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="d-flex px-2 py-1">
-                              <div>
-                                <img
-                                  src="./src/img/team-3.jpg"
-                                  className="avatar avatar-sm me-3 border-radius-lg"
-                                  alt="user2"
-                                />
-                              </div>
-                              <div className="d-flex flex-column justify-content-center">
-                                <h6 className="mb-0 text-sm">Alexa Liras</h6>
-                                <p className="text-xs text-secondary mb-0">
-                                  alexa@creative-tim.com
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <p className="text-xs font-weight-bold mb-0">
-                              Programator
-                            </p>
-                            <p className="text-xs text-secondary mb-0">
-                              Developer
-                            </p>
-                          </td>
-                          <td className="align-middle text-center text-sm">
-                            <span className="badge badge-sm bg-gradient-secondary">
-                              Offline
-                            </span>
-                          </td>
-                          <td className="align-middle text-center">
-                            <span className="text-secondary text-xs font-weight-bold">
-                              11/01/19
-                            </span>
-                          </td>
-                          <td className="align-middle">
-                            <a
-                              className="text-secondary font-weight-bold text-xs"
-                              data-toggle="tooltip"
-                              data-original-title="Edit user"
-                            >
-                              Edit
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="d-flex px-2 py-1">
-                              <div>
-                                <img
-                                  src="file:///Users/mb-eq-215/Documents/TrangTran/target-media-dashboard/src/img/team-4.jpg"
-                                  className="avatar avatar-sm me-3 border-radius-lg"
-                                  alt="user3"
-                                />
-                              </div>
-                              <div className="d-flex flex-column justify-content-center">
-                                <h6 className="mb-0 text-sm">
-                                  Laurent Perrier
-                                </h6>
-                                <p className="text-xs text-secondary mb-0">
-                                  laurent@creative-tim.com
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <p className="text-xs font-weight-bold mb-0">
-                              Executive
-                            </p>
-                            <p className="text-xs text-secondary mb-0">
-                              Projects
-                            </p>
-                          </td>
-                          <td className="align-middle text-center text-sm">
-                            <span className="badge badge-sm bg-gradient-success">
-                              Online
-                            </span>
-                          </td>
-                          <td className="align-middle text-center">
-                            <span className="text-secondary text-xs font-weight-bold">
-                              19/09/17
-                            </span>
-                          </td>
-                          <td className="align-middle">
-                            <a
-                              className="text-secondary font-weight-bold text-xs"
-                              data-toggle="tooltip"
-                              data-original-title="Edit user"
-                            >
-                              Edit
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="d-flex px-2 py-1">
-                              <div>
-                                <img
-                                  src="file:///Users/mb-eq-215/Documents/TrangTran/target-media-dashboard/src/img/team-3.jpg"
-                                  className="avatar avatar-sm me-3 border-radius-lg"
-                                  alt="user4"
-                                />
-                              </div>
-                              <div className="d-flex flex-column justify-content-center">
-                                <h6 className="mb-0 text-sm">Michael Levi</h6>
-                                <p className="text-xs text-secondary mb-0">
-                                  michael@creative-tim.com
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <p className="text-xs font-weight-bold mb-0">
-                              Programator
-                            </p>
-                            <p className="text-xs text-secondary mb-0">
-                              Developer
-                            </p>
-                          </td>
-                          <td className="align-middle text-center text-sm">
-                            <span className="badge badge-sm bg-gradient-success">
-                              Online
-                            </span>
-                          </td>
-                          <td className="align-middle text-center">
-                            <span className="text-secondary text-xs font-weight-bold">
-                              24/12/08
-                            </span>
-                          </td>
-                          <td className="align-middle">
-                            <a
-                              className="text-secondary font-weight-bold text-xs"
-                              data-toggle="tooltip"
-                              data-original-title="Edit user"
-                            >
-                              Edit
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="d-flex px-2 py-1">
-                              <div>
-                                <img
-                                  src="file:///Users/mb-eq-215/Documents/TrangTran/target-media-dashboard/src/img/team-2.jpg"
-                                  className="avatar avatar-sm me-3 border-radius-lg"
-                                  alt="user5"
-                                />
-                              </div>
-                              <div className="d-flex flex-column justify-content-center">
-                                <h6 className="mb-0 text-sm">Richard Gran</h6>
-                                <p className="text-xs text-secondary mb-0">
-                                  richard@creative-tim.com
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <p className="text-xs font-weight-bold mb-0">
-                              Manager
-                            </p>
-                            <p className="text-xs text-secondary mb-0">
-                              Executive
-                            </p>
-                          </td>
-                          <td className="align-middle text-center text-sm">
-                            <span className="badge badge-sm bg-gradient-secondary">
-                              Offline
-                            </span>
-                          </td>
-                          <td className="align-middle text-center">
-                            <span className="text-secondary text-xs font-weight-bold">
-                              04/10/21
-                            </span>
-                          </td>
-                          <td className="align-middle">
-                            <a
-                              className="text-secondary font-weight-bold text-xs"
-                              data-toggle="tooltip"
-                              data-original-title="Edit user"
-                            >
-                              Edit
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="d-flex px-2 py-1">
-                              <div>
-                                <img
-                                  src="file:///Users/mb-eq-215/Documents/TrangTran/target-media-dashboard/src/img/team-4.jpg"
-                                  className="avatar avatar-sm me-3 border-radius-lg"
-                                  alt="user6"
-                                />
-                              </div>
-                              <div className="d-flex flex-column justify-content-center">
-                                <h6 className="mb-0 text-sm">Miriam Eric</h6>
-                                <p className="text-xs text-secondary mb-0">
-                                  miriam@creative-tim.com
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <p className="text-xs font-weight-bold mb-0">
-                              Programator
-                            </p>
-                            <p className="text-xs text-secondary mb-0">
-                              Developer
-                            </p>
-                          </td>
-                          <td className="align-middle text-center text-sm">
-                            <span className="badge badge-sm bg-gradient-secondary">
-                              Offline
-                            </span>
-                          </td>
-                          <td className="align-middle text-center">
-                            <span className="text-secondary text-xs font-weight-bold">
-                              14/09/20
-                            </span>
-                          </td>
-                          <td className="align-middle">
-                            <a
-                              className="text-secondary font-weight-bold text-xs"
-                              data-toggle="tooltip"
-                              data-original-title="Edit user"
-                            >
-                              Edit
-                            </a>
-                          </td>
-                        </tr>
+                        {notifications.map((value, index) => {
+                          return (
+                            <tr key={index}>
+                              <td style={{ maxWidth: "300px" }}>
+                                <div className="text-secondary text-xs font-weight-bold show-one-line">
+                                  {value.title}
+                                </div>
+                              </td>
+                              <td
+                                className="align-middle"
+                                style={{ maxWidth: "300px" }}
+                              >
+                                <div className="text-secondary text-xs font-weight-bold show-one-line">
+                                  {value.content}
+                                </div>
+                              </td>
+                              <td
+                                className="align-middle"
+                                style={{ width: "150px" }}
+                              >
+                                <span className="text-secondary text-xs font-weight-bold">
+                                  {value.created_at}
+                                </span>
+                              </td>
+                              <td
+                                className="align-middle text-center"
+                                style={{ width: "100px" }}
+                              >
+                                <span
+                                  className="text-secondary font-weight-bold text-xs cursor-pointer p-1"
+                                  onClick={() => onOpenCreate(value.id)}
+                                >
+                                  <Icon.Edit
+                                    size={20}
+                                    color="#fff"
+                                    fill="#8075ef"
+                                  />
+                                </span>
+                                {/* <span
+                                  className="text-secondary font-weight-bold text-xs cursor-pointer p-1"
+                                  onClick={() => onConfirmDelete(value.id)}
+                                >
+                                  <Icon.Check size={20} color="#4ad61c" />
+                                </span> */}
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
+                  </div>
+                  <div className="page-right">
+                    <Paginator
+                      {...page}
+                      onPageChange={(newpage) => onPageChange(newpage)}
+                    />
                   </div>
                 </div>
               </div>
@@ -321,8 +201,21 @@ function Permissions() {
         </div>
         <Footer />
       </main>
+      <Confirm
+        visible={!!idDeleted}
+        header={"Delete user"}
+        title={"Are you sure you want to deleted user?"}
+        onClose={onSetIdDeleteNull}
+        onConfirm={onDeleteUser}
+      />
+      <CreateNotification
+        visible={isCreate}
+        onClose={onOpenCreate}
+        onConfirm={onConfirmNotification}
+        id={idDetail}
+      />
     </section>
   );
 }
 
-export default Permissions;
+export default Notification;

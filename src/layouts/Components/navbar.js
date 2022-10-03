@@ -1,12 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Icon from "react-feather";
+import API from "../api";
+import Confirm from "./confirm";
+import { useHistory } from "react-router-dom";
 
 function NavBar() {
+  const history = useHistory();
   const pathname = window.location.pathname;
+  const [isQuesLogout, setIsQuesLogout] = useState(false);
 
   const hideNav = () => {
     const sidenav = document.getElementById("sidenav-main");
     sidenav.classList.add("display-none-nav");
+  };
+
+  const onIsQuesLogout = () => {
+    setIsQuesLogout(!isQuesLogout);
+  };
+
+  const onLogout = () => {
+    onIsQuesLogout();
+    API.getAPIData("/logout.php").then((res) => {
+      if (res.success) {
+        history.push("/login");
+      }
+    });
   };
 
   return (
@@ -34,7 +52,7 @@ function NavBar() {
         id="sidenav-collapse-main"
       >
         <ul className="navbar-nav">
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <a
               className={
                 pathname === "/dashboard"
@@ -54,7 +72,7 @@ function NavBar() {
               </div>
               <span className="nav-link-text ms-1">Dashboard</span>
             </a>
-          </li>
+          </li> */}
           <li className="nav-item">
             <a
               className={
@@ -151,20 +169,12 @@ function NavBar() {
           </li>
           <li className="nav-item">
             <a
-              className={
-                pathname === "/meeting"
-                  ? "nav-link active bbtn-outline-info text-dark"
-                  : "nav-link text-dark"
-              }
-              href="/meeting"
+              className="nav-link text-dark"
+              href="https://calendar.google.com/calendar"
+              // eslint-disable-next-line
+              target="_blank"
             >
-              <div
-                className={
-                  pathname === "/meeting"
-                    ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
-                    : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
-                }
-              >
+              <div className="text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background">
                 <Icon.Calendar />
               </div>
               <span className="nav-link-text ms-1">Meeting</span>
@@ -217,29 +227,24 @@ function NavBar() {
               <span className="nav-link-text ms-1">Notifications</span>
             </a>
           </li>
-          <li className="nav-item">
-            <a
-              className={
-                pathname === "/news"
-                  ? "nav-link active bbtn-outline-info text-dark"
-                  : "nav-link text-dark"
-              }
-              href="/news"
-            >
-              <div
-                className={
-                  pathname === "/news"
-                    ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
-                    : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
-                }
-              >
-                <Icon.FileText />
+          <li className="nav-item hamburger-display">
+            {/* eslint-disable-next-line */}
+            <a className="nav-link text-dark" onClick={() => onIsQuesLogout()}>
+              <div className="text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background">
+                <Icon.LogOut />
               </div>
-              <span className="nav-link-text ms-1">News</span>
+              <span className="nav-link-text ms-1">Sign Out</span>
             </a>
           </li>
         </ul>
       </div>
+      <Confirm
+        visible={isQuesLogout}
+        onClose={onIsQuesLogout}
+        onConfirm={onLogout}
+        title={"Are you sure you want to logout?"}
+        header={"Logout"}
+      />
     </aside>
   );
 }
