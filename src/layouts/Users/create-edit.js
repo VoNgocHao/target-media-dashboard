@@ -9,12 +9,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Confirm from "../Components/confirm";
-import { isEmpty, phoneValidation, emailValidation } from "../helper";
+import {
+  isEmpty,
+  phoneValidation,
+  emailValidation,
+  convertMDY,
+} from "../helper";
 import { toast } from "react-toastify";
 import API from "../api";
 import * as Constant from "../constant";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Loading from "../Components/loading";
+import { useQuery } from "react-query";
 
 function UserCreate() {
   document.title = "Users";
@@ -39,6 +45,8 @@ function UserCreate() {
   const [isError, setIsError] = useState(false);
   const [documents, setDocuments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [fileNameDel, setFileNameDel] = useState("");
+  const [isdelete, setIsdelete] = useState(false);
   let history = useHistory();
   const onToListView = () => {
     history.push("/users");
@@ -55,8 +63,24 @@ function UserCreate() {
     setIsLoading(false);
   }, []);
 
+  const { refetch } = useQuery(
+    ["GET_DOC_USER", id],
+    () => API.getAPIData(`/api/user-document.php?id=${id}`),
+    {
+      retry: 3,
+      refetchOnWindowFocus: true,
+      onSuccess: (res) => {
+        if (res.success) {
+          setDocuments([...res.data]);
+        } else {
+          setDocuments([]);
+        }
+      },
+    }
+  );
+
   const getUserDetail = async () => {
-    const response = await API.createOrUpdateUser("/get-user.php?id=" + id);
+    const response = await API.createOrUpdateUser("/api/get-user.php?id=" + id);
 
     if (response.success) {
       const data = response.data;
@@ -115,7 +139,7 @@ function UserCreate() {
       return;
     }
 
-    const response = await API.createOrUpdateUser("/user-save.php", user);
+    const response = await API.createOrUpdateUser("/api/user-save.php", user);
 
     if (response.success) {
       toast.success(id ? "Update successfully!" : "Create successfully!");
@@ -132,7 +156,7 @@ function UserCreate() {
   };
 
   const getDepartment = async () => {
-    const res = await fetch(`/departments.php`).then((response) =>
+    const res = await fetch(`/api/departments.php`).then((response) =>
       response.json()
     );
     if (res.success) {
@@ -141,7 +165,7 @@ function UserCreate() {
   };
 
   const getPositions = async () => {
-    const res = await fetch(`/positions.php`).then((response) =>
+    const res = await fetch(`/api/positions.php`).then((response) =>
       response.json()
     );
     if (res.success) {
@@ -153,9 +177,24 @@ function UserCreate() {
     setIsConfirm(!isConfirm);
   };
 
-  // const onDeletedUser = () => {};
+  const onSetIsConfirmDel = (file_name) => {
+    setFileNameDel(file_name);
+    setIsdelete(!isdelete);
+  };
 
-  const onConfirmDelete = () => {};
+  const onConfirmDelete = async () => {
+    onSetIsConfirmDel();
+    await API.getAPIData(
+      `/upload/delete-file.php?file_name=${fileNameDel}`
+    ).then((res) => {
+      if (res.success) {
+        toast.success(res.message);
+        refetch();
+      } else {
+        toast.error(res.message);
+      }
+    });
+  };
 
   return (
     <section>
@@ -437,7 +476,15 @@ function UserCreate() {
                 <div className="card-body pb-2" hidden={!id}>
                   <div className="d-flex justify-content-between">
                     <h5>Documents</h5>
-                    <button className="badge badge-sm btn-background-violet float-right">
+                    <button
+                      className="badge badge-sm btn-background-violet float-right"
+                      onClick={() => {
+                        window.open(
+                          `/upload/upload-files.php?key=${Constant.keyString}&id=1`,
+                          ""
+                        );
+                      }}
+                    >
                       <span className="mx-2">
                         <Icon.Upload size={15} /> Upload
                       </span>
@@ -458,7 +505,10 @@ function UserCreate() {
                               <th className="text-uppercase text-xxs font-weight-bolder ps-2">
                                 Uploaded By
                               </th>
-                              <th className="text-center text-uppercase text-xxs font-weight-bolder">
+                              <th
+                                className="text-center text-uppercase text-xxs font-weight-bolder"
+                                style={{ width: "100px" }}
+                              >
                                 Action
                               </th>
                             </tr>
@@ -471,31 +521,39 @@ function UserCreate() {
                                     <div className="d-flex px-2 py-1">
                                       <div className="d-flex flex-column justify-content-center">
                                         <h6 className="mb-0 text-sm">
-                                          John Michael
+                                          {value.name}
                                         </h6>
                                       </div>
                                     </div>
                                   </td>
                                   <td className="align-middle">
                                     <span className="text-secondary text-xs font-weight-bold">
-                                      23/04/18
+                                      {convertMDY(value.updated_at)}
                                     </span>
                                   </td>
                                   <td className="align-middle">
                                     <span className="text-secondary text-xs font-weight-bold">
-                                      23/04/18
+                                      {value.full_name}
                                     </span>
                                   </td>
                                   <td className="align-middle text-center">
-                                    <Link className="text-secondary font-weight-bold text-xs">
-                                      <Icon.Download />
-                                    </Link>
-                                    <Link
+                                    <a
                                       className="text-secondary font-weight-bold text-xs"
-                                      onClick={() => onConfirmDelete()}
+                                      href={`/upload/uploads/${value.name}`}
                                     >
-                                      <Icon.X />
-                                    </Link>
+                                      <Icon.Download
+                                        size={18}
+                                        color="#8075ef"
+                                      />
+                                    </a>
+                                    <span
+                                      className="text-secondary font-weight-bold text-xs mx-2"
+                                      onClick={() =>
+                                        onSetIsConfirmDel(value.name)
+                                      }
+                                    >
+                                      <Icon.X size={18} color="#ff0000" />
+                                    </span>
                                   </td>
                                 </tr>
                               );
@@ -538,13 +596,13 @@ function UserCreate() {
         onClose={onSetIsConfirm}
         onConfirm={onCreateOrUpdateUser}
       />
-      {/* <Confirm
+      <Confirm
         visible={isdelete}
-        header={"Delete user"}
-        title={"Are you sure you want to deleted user?"}
+        header={"Delete document"}
+        title={"Are you sure you want to deleted document?"}
         onClose={onSetIsConfirm}
-        onConfirm={onCreateOrUpdateUser}
-      /> */}
+        onConfirm={onConfirmDelete}
+      />
     </section>
   );
 }

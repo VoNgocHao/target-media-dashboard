@@ -27,21 +27,23 @@ export default function CreateNotification(props) {
   }, [visible]);
 
   const getNotification = async () => {
-    await API.getAPIData(`get-notification-detail.php?id=${id}`).then((res) => {
-      if (res.success) {
-        const data = res.data;
-        setContent(data.content);
-        setTitle(data.title);
-        const arrayId = data.department_ids
-          ? data.department_ids.split(",")
-          : [];
-        setSelectDepart(arrayId);
+    await API.getAPIData(`/api/get-notification-detail.php?id=${id}`).then(
+      (res) => {
+        if (res.success) {
+          const data = res.data;
+          setContent(data.content);
+          setTitle(data.title);
+          const arrayId = data.department_ids
+            ? data.department_ids.split(",")
+            : [];
+          setSelectDepart(arrayId);
+        }
       }
-    });
+    );
   };
 
   const getDepartment = async () => {
-    let url = `/departments.php`;
+    let url = `/api/departments.php`;
     const res = await fetch(url).then((response) => response.json());
     if (res.success) {
       setDepartments(res.data);
@@ -68,7 +70,7 @@ export default function CreateNotification(props) {
     if (!validateParam()) {
       return;
     }
-    await API.postParam("/notification-save.php", {
+    await API.postParam("/api/notification-save.php", {
       content: content,
       user_id: 1,
       id: id,

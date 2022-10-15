@@ -20,7 +20,7 @@ function Login() {
       toast.error("Password cannot be empty!");
       return;
     }
-    await API.postParam("/login.php", {
+    await API.postParam("/api/login.php", {
       email: email,
       password: password,
     }).then((res) => {

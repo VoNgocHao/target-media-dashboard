@@ -109,6 +109,14 @@ body {
   animation: spin-stretch 2s ease infinite;
 }
 
+.css-1uvydh2 {
+  padding: 6px 14px !important;
+}
+.css-i44wyl {
+  width: 100%;
+  margin-top: 5px !important;
+}
+
 @keyframes spin-stretch {
   50% {
     transform: rotate(360deg) scale(0.4, 0.33);

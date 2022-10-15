@@ -15,7 +15,7 @@ function Permissions() {
   }, []);
 
   const getDepartment = async () => {
-    let url = `/departments.php`;
+    let url = `/api/departments.php`;
     const res = await fetch(url).then((response) => response.json());
     if (res.success) {
       setDepartments(res.data);

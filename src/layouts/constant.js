@@ -82,3 +82,5 @@ export const password = "password";
 export const description = "description";
 export const url_avata = "url_avata";
 export const input_edit = [password, description, url_avata];
+export const keyString =
+  "7ab8b7f33db8ce8bbfc7589aebf03f577ab8b7f33db8ce8bbfc7589aebf03f577ab8b7f33db8ce8bbfc7589aebf03f577ab8b7f33db8ce8bbfc7589aebf03f57589aebf03f577ab8b7f33db8";

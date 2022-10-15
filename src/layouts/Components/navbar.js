@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Icon from "react-feather";
 import API from "../api";
 import Confirm from "./confirm";
@@ -8,7 +8,9 @@ function NavBar() {
   const history = useHistory();
   const pathname = window.location.pathname;
   const [isQuesLogout, setIsQuesLogout] = useState(false);
-
+  // eslint-disable-next-line
+  const [permissions, setPermissions] = useState([]);
+  const [code, setCode] = useState([]);
   const hideNav = () => {
     const sidenav = document.getElementById("sidenav-main");
     sidenav.classList.add("display-none-nav");
@@ -20,9 +22,27 @@ function NavBar() {
 
   const onLogout = () => {
     onIsQuesLogout();
-    API.getAPIData("/logout.php").then((res) => {
+    API.getAPIData("/api/logout.php").then((res) => {
       if (res.success) {
         history.push("/login");
+      }
+    });
+  };
+
+  useEffect(() => {
+    getPermission();
+  }, []);
+
+  const getPermission = async () => {
+    await API.getAPIData(`/api/get-user-permission.php`).then((res) => {
+      if (res.success) {
+        const ids = res.data.map((a) => a.code);
+        if (ids.length) {
+          setCode([...ids]);
+        } else {
+          setCode([]);
+        }
+        setPermissions([res.data]);
       }
     });
   };
@@ -43,7 +63,7 @@ function NavBar() {
           className="m-3 d-flex justify-content-center text-decoration-none"
           href="/dashboard"
         >
-          <span className="ms-1 font-weight-bold text-dark">Target Media</span>
+          <span className="ms-1 font-weight-bold text-dark">One Family</span>
         </a>
       </div>
       <hr className="css-1pcem6n-MuiDivider-root" />
@@ -73,53 +93,80 @@ function NavBar() {
               <span className="nav-link-text ms-1">Dashboard</span>
             </a>
           </li> */}
-          <li className="nav-item">
-            <a
-              className={
-                pathname === "/"
-                  ? "nav-link active bbtn-outline-info text-dark"
-                  : "nav-link text-dark"
-              }
-              href="/"
-            >
-              <div
+          {code.includes("home_page") && (
+            <li className="nav-item">
+              <a
                 className={
                   pathname === "/"
-                    ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
-                    : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                    ? "nav-link active bbtn-outline-info text-dark"
+                    : "nav-link text-dark"
                 }
+                href="/"
               >
-                <Icon.Globe />
-              </div>
-              <span className="nav-link-text ms-1">Home Page</span>
-            </a>
-          </li>
+                <div
+                  className={
+                    pathname === "/"
+                      ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
+                      : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                  }
+                >
+                  <Icon.Globe />
+                </div>
+                <span className="nav-link-text ms-1">Home Page</span>
+              </a>
+            </li>
+          )}
           <li className="nav-item mt-3">
             <h6 className="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-8">
               Account pages
             </h6>
           </li>
-          <li className="nav-item">
-            <a
-              className={
-                pathname === "/users"
-                  ? "nav-link active bbtn-outline-info text-dark"
-                  : "nav-link text-dark"
-              }
-              href="/users"
-            >
-              <div
+          {/* {code.includes("user_page") && (
+            <li className="nav-item">
+              <a
                 className={
                   pathname === "/users"
-                    ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
-                    : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                    ? "nav-link active bbtn-outline-info text-dark"
+                    : "nav-link text-dark"
                 }
+                href="/users"
               >
-                <Icon.Users />
-              </div>
-              <span className="nav-link-text ms-1">Users</span>
-            </a>
-          </li>
+                <div
+                  className={
+                    pathname === "/users"
+                      ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
+                      : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                  }
+                >
+                  <Icon.Users />
+                </div>
+                <span className="nav-link-text ms-1">Users</span>
+              </a>
+            </li>
+          )} */}
+          {code.includes("user_page") && (
+            <li className="nav-item">
+              <a
+                className={
+                  pathname === "/nhan-vien"
+                    ? "nav-link active bbtn-outline-info text-dark"
+                    : "nav-link text-dark"
+                }
+                href="/nhan-vien"
+              >
+                <div
+                  className={
+                    pathname === "/nhan-vien"
+                      ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
+                      : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                  }
+                >
+                  <Icon.Users />
+                </div>
+                <span className="nav-link-text ms-1">Nhân viên</span>
+              </a>
+            </li>
+          )}
           <li className="nav-item">
             <a
               className={
@@ -141,32 +188,35 @@ function NavBar() {
               <span className="nav-link-text ms-1">Profile</span>
             </a>
           </li>
-          <li className="nav-item">
-            <a
-              className={
-                pathname === "/kpi"
-                  ? "nav-link active bbtn-outline-info text-dark"
-                  : "nav-link text-dark"
-              }
-              href="/kpi"
-            >
-              <div
+          {code.includes("kpi_page") && (
+            <li className="nav-item">
+              <a
                 className={
                   pathname === "/kpi"
-                    ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
-                    : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                    ? "nav-link active bbtn-outline-info text-dark"
+                    : "nav-link text-dark"
                 }
+                href="/kpi"
               >
-                <Icon.Target />
-              </div>
-              <span className="nav-link-text ms-1">KPI</span>
-            </a>
-          </li>
+                <div
+                  className={
+                    pathname === "/kpi"
+                      ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
+                      : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                  }
+                >
+                  <Icon.Target />
+                </div>
+                <span className="nav-link-text ms-1">KPI</span>
+              </a>
+            </li>
+          )}
           <li className="nav-item mt-3">
             <h6 className="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-8">
               Meeting pages
             </h6>
           </li>
+
           <li className="nav-item">
             <a
               className="nav-link text-dark"
@@ -180,53 +230,58 @@ function NavBar() {
               <span className="nav-link-text ms-1">Meeting</span>
             </a>
           </li>
+
           <li className="nav-item mt-3">
             <h6 className="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-8">
               System
             </h6>
           </li>
-          <li className="nav-item">
-            <a
-              className={
-                pathname === "/permissions"
-                  ? "nav-link active bbtn-outline-info text-dark"
-                  : "nav-link text-dark"
-              }
-              href="/permissions"
-            >
-              <div
+          {code.includes("permission_page") && (
+            <li className="nav-item">
+              <a
                 className={
                   pathname === "/permissions"
-                    ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
-                    : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                    ? "nav-link active bbtn-outline-info text-dark"
+                    : "nav-link text-dark"
                 }
+                href="/permissions"
               >
-                <Icon.Award />
-              </div>
-              <span className="nav-link-text ms-1">Permissions</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a
-              className={
-                pathname === "/notifications"
-                  ? "nav-link active bbtn-outline-info text-dark"
-                  : "nav-link text-dark"
-              }
-              href="/notifications"
-            >
-              <div
+                <div
+                  className={
+                    pathname === "/permissions"
+                      ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
+                      : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                  }
+                >
+                  <Icon.Award />
+                </div>
+                <span className="nav-link-text ms-1">Permissions</span>
+              </a>
+            </li>
+          )}
+          {code.includes("notifications_page") && (
+            <li className="nav-item">
+              <a
                 className={
                   pathname === "/notifications"
-                    ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
-                    : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                    ? "nav-link active bbtn-outline-info text-dark"
+                    : "nav-link text-dark"
                 }
+                href="/notifications"
               >
-                <Icon.Bell />
-              </div>
-              <span className="nav-link-text ms-1">Notifications</span>
-            </a>
-          </li>
+                <div
+                  className={
+                    pathname === "/notifications"
+                      ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
+                      : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                  }
+                >
+                  <Icon.Bell />
+                </div>
+                <span className="nav-link-text ms-1">Notifications</span>
+              </a>
+            </li>
+          )}
           <li className="nav-item hamburger-display">
             {/* eslint-disable-next-line */}
             <a className="nav-link text-dark" onClick={() => onIsQuesLogout()}>

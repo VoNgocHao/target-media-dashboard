@@ -13,7 +13,7 @@ function Post({ data, onEditPost, user_id }) {
   }, [data]);
 
   const onSave = async (news_id) => {
-    await API.postParam("comment-save.php", {
+    await API.postParam("/api/comment-save.php", {
       news_id: news_id,
       content: comment,
       user_id: 1,
@@ -32,7 +32,7 @@ function Post({ data, onEditPost, user_id }) {
           <div className="col-auto">
             <div className="avatar avatar-lg position-relative">
               <img
-                src={"/images/" + data.url_avata}
+                src={"/api/images/" + data.url_avata}
                 alt="profile_image"
                 className="w-100 border-radius-lg shadow-sm"
               />
@@ -61,7 +61,7 @@ function Post({ data, onEditPost, user_id }) {
       <div className="card-body p-3">
         <div className="row bd-news-post">
           {parse(data.content || "")}
-          <div className="card-footer d-flex">
+          {/* <div className="card-footer d-flex">
             <div className="d-flex px-2" style={{ alignItems: "baseline" }}>
               <Icon.ThumbsUp size={16} />
               <span>150</span>
@@ -71,7 +71,7 @@ function Post({ data, onEditPost, user_id }) {
               <span>{comments.length}</span>
             </div>
           </div>
-          <hr className="css-1pcem6n-MuiDivider-root" />
+          <hr className="css-1pcem6n-MuiDivider-root" /> */}
           <div className="card-footer">
             {comments.map((value, index) => {
               return (
@@ -79,7 +79,7 @@ function Post({ data, onEditPost, user_id }) {
                   <div className="col-auto">
                     <div className="avatar avatar-lg rounded-circle">
                       <img
-                        src={"/images/" + value.url_avata}
+                        src={"/api/images/" + value.url_avata}
                         alt="profile_image"
                         className="w-100 border-radius-lg shadow-sm"
                       />
@@ -101,7 +101,7 @@ function Post({ data, onEditPost, user_id }) {
               <div className="col-auto">
                 <div className="avatar avatar-lg rounded-circle">
                   <img
-                    src={"/images/" + data.url_avata}
+                    src={"/api/images/" + data.url_avata}
                     alt="profile_image"
                     className="w-100 border-radius-lg shadow-sm"
                   />

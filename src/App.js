@@ -20,7 +20,7 @@ function App() {
         <Route exact path="/">
           <HomePage />
         </Route>
-        <Route path="/users">
+        <Route path="/nhan-vien">
           <Users />
         </Route>
         <Route path="/user/create">
@@ -47,9 +47,9 @@ function App() {
         <Route path="/login">
           <Login />
         </Route>
-        <Route path="*">
+        {/* <Route path="*">
           <HomePage />
-        </Route>
+        </Route> */}
       </Switch>
     </Router>
   );

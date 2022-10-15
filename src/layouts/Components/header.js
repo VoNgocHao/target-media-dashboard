@@ -20,7 +20,7 @@ function Header({ title }) {
   }, []);
 
   const loginCredentials = async () => {
-    await API.getAPIData("/login-credentials.php").then((res) => {
+    await API.getAPIData("/api/login-credentials.php").then((res) => {
       if (!res.success) {
         history.push("/login");
       }
@@ -42,7 +42,7 @@ function Header({ title }) {
 
   const onLogout = () => {
     onIsQuesLogout();
-    API.getAPIData("/logout.php").then((res) => {
+    API.getAPIData("/api/logout.php").then((res) => {
       if (res.success) {
         history.push("/login");
       }
@@ -50,7 +50,7 @@ function Header({ title }) {
   };
 
   const getNotificationUnread = async () => {
-    await API.getAPIData("/notifications-unread-user.php").then((res) => {
+    await API.getAPIData("/api/notifications-unread-user.php").then((res) => {
       if (res.success) {
         setNotifications(res.data);
       }
@@ -147,7 +147,7 @@ function Header({ title }) {
                           <div className="d-flex py-1">
                             <div className="my-auto">
                               <img
-                                src={"/images/" + value.url_avata}
+                                src={"/api/images/" + value.url_avata}
                                 className="avatar avatar-sm me-3"
                                 alt="img"
                               />

@@ -13,19 +13,21 @@ export default function ReadNotification(props) {
   useEffect(() => {
     getNotification();
   }, [visible]);
-  console.log(idNotifi);
+
   const getNotification = async () => {
-    await API.getAPIData(`get-notification-detail.php?id=${id}`).then((res) => {
-      if (res.success) {
-        const data = res.data;
-        setContent(data.content);
-        setTitle(data.title);
-        setIdNotifi(data.id);
+    await API.getAPIData(`/api/get-notification-detail.php?id=${id}`).then(
+      (res) => {
+        if (res.success) {
+          const data = res.data;
+          setContent(data.content);
+          setTitle(data.title);
+          setIdNotifi(data.id);
+        }
       }
-    });
+    );
   };
   const onCreateNotification = async () => {
-    await API.postParam("/notification-read.php", {
+    await API.postParam("/api/notification-read.php", {
       id: idNotifi,
     }).then((res) => {
       if (res.success) {

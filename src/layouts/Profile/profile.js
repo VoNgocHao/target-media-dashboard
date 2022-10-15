@@ -46,7 +46,7 @@ function Profile() {
   }, []);
 
   const getProfile = async () => {
-    await API.getAPIData("/get-profile.php").then((res) => {
+    await API.getAPIData("/api/get-profile.php").then((res) => {
       if (res.success) {
         setUser(res.data);
       } else {
@@ -81,7 +81,7 @@ function Profile() {
           <div
             className="page-header min-height-300 border-radius-xl mt-4"
             style={{
-              backgroundImage: `url(${"/images/" + user.url_avata ||
+              backgroundImage: `url(${"/api/images/" + user.url_avata ||
                 ImgUserDefault})`,
             }}
           ></div>
@@ -90,7 +90,7 @@ function Profile() {
               <div className="col-auto">
                 <div className="avatar avatar-xl position-relative">
                   <img
-                    src={"/images/" + user.url_avata || ImgUserDefault}
+                    src={"/api/images/" + user.url_avata || ImgUserDefault}
                     alt="profile_image"
                     className="w-100 border-radius-lg shadow-sm"
                   />

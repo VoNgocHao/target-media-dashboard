@@ -14,6 +14,7 @@ function HomePage() {
   const [isPost, setIsPost] = useState(false);
   const [posts, setPost] = useState([]);
   const [editID, setEditID] = useState(0);
+  const [code, setCode] = useState([]);
   const [user, setUser] = useState({
     id: "",
     full_name: "",
@@ -39,10 +40,11 @@ function HomePage() {
   useEffect(() => {
     getNews(0);
     getProfile();
+    getPermission();
   }, []);
 
   const getProfile = async () => {
-    await API.getAPIData("/get-profile.php").then((res) => {
+    await API.getAPIData("/api/get-profile.php").then((res) => {
       if (res.success) {
         setUser(res.data);
       } else {
@@ -52,15 +54,15 @@ function HomePage() {
   };
 
   const getNews = async (offset) => {
-    await API.getAPIData(`/get-news.php?size=${size}&offset=${offset}`).then(
-      (res) => {
-        if (res.success) {
-          setPost(res.data);
-        } else {
-          toast.error("Internal server error!");
-        }
+    await API.getAPIData(
+      `/api/get-news.php?size=${size}&offset=${offset}`
+    ).then((res) => {
+      if (res.success) {
+        setPost(res.data);
+      } else {
+        toast.error("Internal server error!");
       }
-    );
+    });
   };
 
   const onConfirmPost = () => {
@@ -73,9 +75,22 @@ function HomePage() {
     setEditID(id);
   };
 
+  const getPermission = async () => {
+    await API.getAPIData(`/api/get-user-permission.php`).then((res) => {
+      if (res.success) {
+        const ids = res.data.map((a) => a.code);
+        if (ids.length) {
+          setCode([...ids]);
+        } else {
+          setCode([]);
+        }
+      }
+    });
+  };
+  console.log(code);
   return (
     <section>
-      <NavBar />
+      <NavBar setPmsCode={setCode} />
       <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
         <Header title="Home" />
         <div className="container-fluid px-2 px-md-4">
@@ -92,7 +107,7 @@ function HomePage() {
               <div className="col-auto">
                 <div className="avatar avatar-xl position-relative">
                   <img
-                    src={"/images/" + user.url_avata}
+                    src={"/api/images/" + user.url_avata}
                     alt="profile_image"
                     className="w-100 border-radius-lg shadow-sm"
                   />
@@ -106,16 +121,18 @@ function HomePage() {
                   </p>
                 </div>
               </div>
-              <div className="col-auto my-auto">
-                <button
-                  className="btn btn-outline-info btn-sm mt-2"
-                  onClick={() => onOpenPost()}
-                >
-                  <span>
-                    <Icon.Plus /> Create News
-                  </span>
-                </button>
-              </div>
+              {code.includes("post_home_page") && (
+                <div className="col-auto my-auto">
+                  <button
+                    className="btn btn-outline-info btn-sm mt-2"
+                    onClick={() => onOpenPost()}
+                  >
+                    <span>
+                      <Icon.Plus /> Create News
+                    </span>
+                  </button>
+                </div>
+              )}
               {/* <button
                 className="btn btn-outline-info display-mone-mobile"
                 onClick={() => onOpenPost()}

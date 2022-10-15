@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import API from "../api";
 
 function Users() {
-  document.title = "Users";
+  document.title = "Nhân viên";
   let history = useHistory();
   const [users, setUsers] = useState([]);
   const [inputSearch, setInputSearch] = useState("");
@@ -37,7 +37,10 @@ function Users() {
   }, []);
 
   const getUsers = async (page, ipSearch) => {
-    let url = `/users.php?offset=${caculateOffSet(page, size)}&size=${size}`;
+    let url = `/api/users.php?offset=${caculateOffSet(
+      page,
+      size
+    )}&size=${size}`;
     if (ipSearch !== "" && ipSearch !== null && ipSearch !== undefined) {
       url = url + `&search_term=${ipSearch}`;
     }
@@ -61,7 +64,7 @@ function Users() {
   };
 
   const getDepartment = async () => {
-    let url = `/departments.php`;
+    let url = `/api/departments.php`;
     const res = await fetch(url).then((response) => response.json());
     if (res.success) {
       setDepartments(res.data);
@@ -69,7 +72,7 @@ function Users() {
   };
 
   const getPositions = async () => {
-    let url = `/positions.php`;
+    let url = `/api/positions.php`;
     const res = await fetch(url).then((response) => response.json());
     if (res.success) {
       setPositions(res.data);
@@ -100,7 +103,7 @@ function Users() {
   const onDeleteUser = async () => {
     setIsLoading(true);
     const res = await fetch(
-      "delete-user.php?id=" + idDeleted
+      "/api/delete-user.php?id=" + idDeleted
     ).then((response) => response.json());
     onSetIdDeleteNull();
     if (res.success) {
@@ -122,7 +125,7 @@ function Users() {
 
   const onResetPassword = async () => {
     setIsLoading(true);
-    const res = await API.resetPassword("/reset-password.php", {
+    const res = await API.resetPassword("/api/reset-password.php", {
       id: idResetKey,
     });
     onResetPassNull();
@@ -169,7 +172,7 @@ function Users() {
                   onClick={() => onCreateBtnClick()}
                 >
                   <span className="px-2">
-                    <Icon.Plus size={15} /> Create
+                    <Icon.Plus size={15} /> Thêm nhân viên
                   </span>
                 </button>
               </div>
@@ -182,20 +185,18 @@ function Users() {
                       <thead>
                         <tr>
                           <th className="text-uppercase text-xxs font-weight-bolder">
-                            Author
+                            Họ và tên
                           </th>
                           <th className="text-uppercase text-xxs font-weight-bolder ps-2">
-                            Function
+                            Phòng ban
                           </th>
                           <th className="text-center text-uppercase text-xxs font-weight-bolder">
-                            Status
+                            Trạng thái
                           </th>
                           <th className="text-center text-uppercase text-xxs font-weight-bolder">
-                            Working Date
+                            Ngày vào làm
                           </th>
-                          <th className="text-center text-uppercase text-xxs font-weight-bolder">
-                            Action
-                          </th>
+                          <th className="text-center text-uppercase text-xxs font-weight-bolder"></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -213,7 +214,9 @@ function Users() {
                                   <div>
                                     <img
                                       src={
-                                        "/images/" + value.url_avata || userImg
+                                        value.url_avata
+                                          ? "/api/images/" + value.url_avata
+                                          : userImg
                                       }
                                       className="avatar avatar-sm me-3 border-radius-lg"
                                       alt="user1"

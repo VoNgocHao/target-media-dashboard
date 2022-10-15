@@ -33,7 +33,7 @@ function Notification() {
   }, []);
 
   const getNotifications = async (page) => {
-    let url = `/notifications.php?offset=${caculateOffSet(
+    let url = `/api/notifications.php?offset=${caculateOffSet(
       page,
       size
     )}&size=${size}`;
@@ -72,7 +72,7 @@ function Notification() {
   const onDeleteUser = async () => {
     setIsLoading(true);
     const res = await fetch(
-      "delete-user.php?id=" + idDeleted
+      "/api/delete-user.php?id=" + idDeleted
     ).then((response) => response.json());
     onSetIdDeleteNull();
     if (res.success) {

@@ -41,7 +41,7 @@ export default function PopupEditText(props) {
     }
 
     if (type === url_avata) {
-      API.postParam("upload-avata.php", {
+      API.postParam("/upload-img.php", {
         field_name: type,
         image_base64: newParam,
       }).then((res) => {
@@ -54,7 +54,7 @@ export default function PopupEditText(props) {
         }
       });
     } else {
-      API.postParam("update-profile.php", {
+      API.postParam("/api/update-profile.php", {
         field_name: type,
         new_value: newParam,
         old_value: oldPassword,

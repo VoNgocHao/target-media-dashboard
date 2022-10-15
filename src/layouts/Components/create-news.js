@@ -18,7 +18,7 @@ export default function CreateNews(props) {
   }, [id]);
 
   const getNewsDetail = async () => {
-    await API.getAPIData(`get-news-detail.php?id=${id}`).then((res) => {
+    await API.getAPIData(`/api/get-news-detail.php?id=${id}`).then((res) => {
       if (res.success) {
         setQuill(res.data.content);
       }
@@ -30,7 +30,7 @@ export default function CreateNews(props) {
   };
 
   const onCreateNews = async () => {
-    await API.postParam("/news-save.php", {
+    await API.postParam("/api/news-save.php", {
       content: quill,
       created_by: 1,
       id: id,
