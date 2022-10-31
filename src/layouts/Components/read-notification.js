@@ -11,7 +11,9 @@ export default function ReadNotification(props) {
   const [idNotifi, setIdNotifi] = useState("");
 
   useEffect(() => {
-    getNotification();
+    if (id) {
+      getNotification();
+    }
   }, [visible]);
 
   const getNotification = async () => {

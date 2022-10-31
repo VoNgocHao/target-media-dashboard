@@ -7,14 +7,22 @@ import * as Icon from "react-feather";
 import CreateNews from "./Components/create-news";
 import API from "./api";
 import { toast } from "react-toastify";
+import SubNews from "./Components/sub-news";
+import CreateSubNews from "./Components/create-sub-news";
 
 function HomePage() {
-  document.title = "Home page";
+  document.title = "Thông tin nội bộ";
   const size = 5;
+  const [loading, setLoading] = useState(false);
   const [isPost, setIsPost] = useState(false);
+  const [isSubNews, setIsSubNews] = useState(false);
+  const [subNews, setSubNews] = useState([]);
   const [posts, setPost] = useState([]);
   const [editID, setEditID] = useState(0);
   const [code, setCode] = useState([]);
+  const [offSet, setOffSet] = useState(0);
+  const [innerHeight, setInnerHeight] = useState(0);
+  const [subNewsID, setSubNewsID] = useState("");
   const [user, setUser] = useState({
     id: "",
     full_name: "",
@@ -37,11 +45,36 @@ function HomePage() {
     setIsPost(!isPost);
   };
 
+  const onSubNews = (id) => {
+    setSubNewsID(id);
+    setIsSubNews(!isSubNews);
+  };
+
+  const onConfirmSubNews = () => {
+    setIsSubNews(!isSubNews);
+    getSubNews();
+  };
+
   useEffect(() => {
     getNews(0);
     getProfile();
     getPermission();
+    getSubNews();
+    const onScroll = () => {
+      if (window.innerHeight + window.scrollY > document.body.scrollHeight) {
+        setInnerHeight(window.innerHeight + window.scrollY);
+      }
+    };
+    window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, {
+      passive: true,
+    });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    getNews(offSet);
+  }, [innerHeight]);
 
   const getProfile = async () => {
     await API.getAPIData("/api/get-profile.php").then((res) => {
@@ -54,17 +87,22 @@ function HomePage() {
   };
 
   const getNews = async (offset) => {
+    setLoading(true);
+    let offSetPage = offset ? offset : offSet;
+    if (offSetPage > 0) {
+      offSetPage = offSetPage * size;
+    }
+
     await API.getAPIData(
-      `/api/get-news.php?size=${size}&offset=${offset}`
+      `/api/get-news.php?size=${size}&offset=${offSetPage}`
     ).then((res) => {
-      if (res.success) {
-        setPost(res.data);
-      } else {
-        toast.error("Internal server error!");
+      if (res.success && res.data.length > 0) {
+        setPost([...posts, ...res.data]);
+        setOffSet(offSet + 1);
       }
     });
+    setLoading(false);
   };
-
   const onConfirmPost = () => {
     onOpenPost();
     getNews(0);
@@ -87,12 +125,20 @@ function HomePage() {
       }
     });
   };
-  console.log(code);
+
+  const getSubNews = async () => {
+    await API.getAPIData(`/api/sub-news.php`).then((res) => {
+      if (res.success) {
+        setSubNews(res.data);
+      }
+    });
+  };
+
   return (
     <section>
       <NavBar setPmsCode={setCode} />
       <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <Header title="Home" />
+        <Header title="Thông tin nội bộ" />
         <div className="container-fluid px-2 px-md-4">
           {/* <div
             className="page-header min-height-300 border-radius-xl mt-4"
@@ -101,7 +147,7 @@ function HomePage() {
                 'url("https://fullstack-react-soft-dashboard.appseed-srv1.com/static/media/curved0.d146ec6e.jpg")',
             }}
           ></div> */}
-          <div className="card card-body mx-3 mx-md-4 ">
+          <div className="card card-body mt-1">
             {/* mt-n6 */}
             <div className="row gx-4 mb-2">
               <div className="col-auto">
@@ -128,26 +174,28 @@ function HomePage() {
                     onClick={() => onOpenPost()}
                   >
                     <span>
-                      <Icon.Plus /> Create News
+                      <Icon.Plus /> Viết bài
                     </span>
                   </button>
                 </div>
               )}
-              {/* <button
-                className="btn btn-outline-info display-mone-mobile"
-                onClick={() => onOpenPost()}
-                style={{
-                  position: "absolute",
-                  right: "12px",
-                  width: "23px",
-                  bottom: "-6px",
-                  padding: "0px",
-                }}
-              >
-                <span>
-                  <Icon.Plus size={10} />
-                </span>
-              </button> */}
+              {code.includes("post_sub_new_home") && (
+                <button
+                  className="btn btn-outline-info display-mone-mobile"
+                  onClick={() => onSubNews()}
+                  style={{
+                    position: "absolute",
+                    right: "12px",
+                    width: "23px",
+                    bottom: "-6px",
+                    padding: "0px",
+                  }}
+                >
+                  <span>
+                    <Icon.Plus size={10} />
+                  </span>
+                </button>
+              )}
             </div>
           </div>
           <div className="row">
@@ -162,32 +210,22 @@ function HomePage() {
                   />
                 );
               })}
-            </div>
-            <div className="col-md-4 mb-4 display-mone-mobile">
-              <div className="card mt-4">
-                <div className="card-header pb-0 p-3">
-                  <div className="row">
-                    <div className="col-6 d-flex align-items-center">
-                      <h6 className="mb-0 txt-linear-gradient-gr text-xl">
-                        Digital Marketing
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-                <div className="card-body p-3">
-                  <div className="row">
-                    <p>
-                      A group of people who collectively are responsible for all
-                      of the work necessary to produce working, validated
-                      assets.
-                    </p>
-                    {/* <hr className="css-1pcem6n-MuiDivider-root" /> */}
-                    {/* <span className="badge badge-sm bg-gradient-success">
-                      MARKETING TEAM
-                    </span> */}
-                  </div>
-                </div>
+              <div className="mt-3" style={{ minHeight: "100px" }}>
+                {loading && <div className="spin-loading"></div>}
               </div>
+            </div>
+            <div className="col-md-4 mb-4 display-mone-mobile sub-news">
+              {subNews.map((data) => {
+                return (
+                  <SubNews
+                    data={data}
+                    key={data.id}
+                    reload={getSubNews}
+                    editSubNewID={onSubNews}
+                    permission_code={code}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
@@ -197,6 +235,12 @@ function HomePage() {
           onClose={onOpenPost}
           onConfirm={onConfirmPost}
           id={editID}
+        />
+        <CreateSubNews
+          visible={isSubNews}
+          onClose={onSubNews}
+          onConfirm={onConfirmSubNews}
+          id={subNewsID}
         />
       </main>
     </section>

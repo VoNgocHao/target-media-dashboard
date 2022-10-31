@@ -17,6 +17,7 @@ import ExcelJS from "exceljs/dist/exceljs";
 import Loading from "../Components/loading";
 import { toast } from "react-toastify";
 import Confirm from "../Components/confirm";
+import "dayjs/locale/fr";
 
 function KpiPage() {
   const dateNow = new Date();
@@ -212,7 +213,7 @@ function KpiPage() {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Find name, email"
+                          placeholder="Tìm tên hoặc email"
                           value={keySearch}
                           onChange={(e) => setKeySearch(e.target.value)}
                         />
@@ -239,7 +240,10 @@ function KpiPage() {
                     </div>
                     <div className="col-md-3 mb-md-0 mb-4">
                       <div className="input-group input-group-outline">
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <LocalizationProvider
+                          dateAdapter={AdapterDayjs}
+                          adapterLocale={"fr"}
+                        >
                           <DatePicker
                             views={["year"]}
                             value={selectYear}
@@ -260,7 +264,7 @@ function KpiPage() {
                           value={selectTarget}
                           onChange={(e) => setSelectTarget(e.target.value)}
                         >
-                          <option value={""}>---Select Target---</option>
+                          <option value={""}>---Mục tiêu---</option>
                           {Constant.select_target.map((value, index) => {
                             return (
                               <option value={value.value} key={index}>
@@ -281,7 +285,7 @@ function KpiPage() {
                         onClick={() => onSearch()}
                       >
                         <span className="mx-3">
-                          <Icon.Search size={18} /> Search
+                          <Icon.Search size={18} /> Tìm
                         </span>
                       </button>
                       <button
@@ -341,13 +345,13 @@ function KpiPage() {
                       <thead>
                         <tr>
                           <th className="text-uppercase text-xxs font-weight-bolder">
-                            Author
+                            Nhân viên
                           </th>
                           <th className="text-center text-uppercase text-xxs font-weight-bolder">
-                            Target
+                            Mục tiêu
                           </th>
                           <th className="text-center text-uppercase text-xxs font-weight-bolder">
-                            Month
+                            Tháng
                           </th>
                           <th className="text-secondary opacity-7"></th>
                         </tr>

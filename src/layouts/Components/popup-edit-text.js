@@ -4,6 +4,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader, Button } from "reactstrap";
 import API from "../api";
 import {
   description,
+  header_edit,
   input_edit,
   password,
   phone,
@@ -30,13 +31,13 @@ export default function PopupEditText(props) {
     setValueFalse(false);
     if (isEmpty(newParam)) {
       setIsError(true);
-      toast.error("Value cannot be empty");
+      toast.error("Giá trị không được bỏ trống!");
       return;
     }
     if (type === phone && !phoneValidation(newParam)) {
       setIsError(true);
       setValueFalse("new_param");
-      toast.error("Phone number is incorrect!");
+      toast.error("Số điện thoại không đúng!");
       return;
     }
 
@@ -74,10 +75,12 @@ export default function PopupEditText(props) {
     const base64 = await convertBase64(file);
     setNewParam(base64);
   };
+
+  const title = header_edit.find((x) => x.value === type);
   return (
     <Modal size="md" isOpen={visible}>
       <ModalHeader>
-        {header} {type}
+        {header} {title ? title.label : ""}
       </ModalHeader>
       <ModalBody>
         {type === description && (
@@ -94,7 +97,7 @@ export default function PopupEditText(props) {
               rows="4"
               value={newParam}
               onChange={(e) => setNewParam(e.target.value)}
-              placeholder="Description"
+              placeholder="giới thiệu"
             />
           </div>
         )}
@@ -111,7 +114,7 @@ export default function PopupEditText(props) {
               <input
                 type="password"
                 className="form-control"
-                placeholder="Old passwprd"
+                placeholder="Mật khẩu cũ"
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
                 maxLength={40}
@@ -127,7 +130,7 @@ export default function PopupEditText(props) {
               <input
                 type="password"
                 className="form-control"
-                placeholder="New passwprd"
+                placeholder="Mật khẩu mới"
                 value={newParam}
                 onChange={(e) => setNewParam(e.target.value)}
                 maxLength={40}
@@ -147,7 +150,7 @@ export default function PopupEditText(props) {
             <input
               type="text"
               className="form-control"
-              placeholder="Enter new param"
+              placeholder="Nhập thông tin câp nhật"
               value={newParam}
               onChange={(e) => setNewParam(e.target.value)}
             />
@@ -173,7 +176,7 @@ export default function PopupEditText(props) {
               onClose("");
             }}
           >
-            Cancel
+            Huỷ
           </button>
           <Button
             className="bg-gradient-primary"
@@ -181,7 +184,7 @@ export default function PopupEditText(props) {
             style={{ marginLeft: "10px" }}
             onClick={() => onValidation()}
           >
-            Save
+            Cập nhật
           </Button>
         </div>
       </ModalFooter>

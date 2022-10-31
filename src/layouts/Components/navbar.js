@@ -90,7 +90,7 @@ function NavBar() {
               >
                 <Icon.Codesandbox />
               </div>
-              <span className="nav-link-text ms-1">Dashboard</span>
+              <span className="nav-link-text ms-1 show-one-line">Dashboard</span>
             </a>
           </li> */}
           {code.includes("home_page") && (
@@ -112,7 +112,9 @@ function NavBar() {
                 >
                   <Icon.Globe />
                 </div>
-                <span className="nav-link-text ms-1">Home Page</span>
+                <span className="nav-link-text ms-1 show-one-line">
+                  Trang thông tin
+                </span>
               </a>
             </li>
           )}
@@ -121,29 +123,6 @@ function NavBar() {
               Account pages
             </h6>
           </li>
-          {/* {code.includes("user_page") && (
-            <li className="nav-item">
-              <a
-                className={
-                  pathname === "/users"
-                    ? "nav-link active bbtn-outline-info text-dark"
-                    : "nav-link text-dark"
-                }
-                href="/users"
-              >
-                <div
-                  className={
-                    pathname === "/users"
-                      ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
-                      : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
-                  }
-                >
-                  <Icon.Users />
-                </div>
-                <span className="nav-link-text ms-1">Users</span>
-              </a>
-            </li>
-          )} */}
           {code.includes("user_page") && (
             <li className="nav-item">
               <a
@@ -163,7 +142,9 @@ function NavBar() {
                 >
                   <Icon.Users />
                 </div>
-                <span className="nav-link-text ms-1">Nhân viên</span>
+                <span className="nav-link-text ms-1 show-one-line">
+                  Nhân viên
+                </span>
               </a>
             </li>
           )}
@@ -185,9 +166,36 @@ function NavBar() {
               >
                 <Icon.User />
               </div>
-              <span className="nav-link-text ms-1">Profile</span>
+              <span className="nav-link-text ms-1 show-one-line">
+                Thông tin cá nhân
+              </span>
             </a>
           </li>
+          {code.includes("approve_leave_off") && (
+            <li className="nav-item">
+              <a
+                className={
+                  pathname === "/leave"
+                    ? "nav-link active bbtn-outline-info text-dark"
+                    : "nav-link text-dark"
+                }
+                href="/leave"
+              >
+                <div
+                  className={
+                    pathname === "/leave"
+                      ? "text-center me-2 d-flex align-items-center justify-content-center text-white btn-navbar-icon navbar-background-select"
+                      : "text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background"
+                  }
+                >
+                  <Icon.User />
+                </div>
+                <span className="nav-link-text ms-1 show-one-line">
+                  Duyệt phép/Ngày off
+                </span>
+              </a>
+            </li>
+          )}
           {code.includes("kpi_page") && (
             <li className="nav-item">
               <a
@@ -207,7 +215,7 @@ function NavBar() {
                 >
                   <Icon.Target />
                 </div>
-                <span className="nav-link-text ms-1">KPI</span>
+                <span className="nav-link-text ms-1 show-one-line">KPI</span>
               </a>
             </li>
           )}
@@ -227,7 +235,7 @@ function NavBar() {
               <div className="text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background">
                 <Icon.Calendar />
               </div>
-              <span className="nav-link-text ms-1">Meeting</span>
+              <span className="nav-link-text ms-1 show-one-line">Meeting</span>
             </a>
           </li>
 
@@ -255,7 +263,9 @@ function NavBar() {
                 >
                   <Icon.Award />
                 </div>
-                <span className="nav-link-text ms-1">Permissions</span>
+                <span className="nav-link-text ms-1 show-one-line">
+                  Phân quyền
+                </span>
               </a>
             </li>
           )}
@@ -278,7 +288,9 @@ function NavBar() {
                 >
                   <Icon.Bell />
                 </div>
-                <span className="nav-link-text ms-1">Notifications</span>
+                <span className="nav-link-text ms-1 show-one-line">
+                  Thông báo
+                </span>
               </a>
             </li>
           )}
@@ -288,7 +300,7 @@ function NavBar() {
               <div className="text-center me-2 d-flex align-items-center justify-content-center text-dark btn-navbar-icon navbar-background">
                 <Icon.LogOut />
               </div>
-              <span className="nav-link-text ms-1">Sign Out</span>
+              <span className="nav-link-text ms-1 show-one-line">Sign Out</span>
             </a>
           </li>
         </ul>

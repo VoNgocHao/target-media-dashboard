@@ -53,12 +53,12 @@ export default function CreateNotification(props) {
   const validateParam = () => {
     let isValue = true;
 
-    if (isEmpty(setTitle)) {
-      toast.error("Title cannot be empty!");
+    if (isEmpty(title)) {
+      toast.error("Tiêu đề không được trống!");
       isValue = false;
     }
     if (isEmpty(content)) {
-      toast.error("Content cannot be empty!");
+      toast.error("Nội dung không được trống!");
       isValue = false;
     }
 
@@ -78,7 +78,7 @@ export default function CreateNotification(props) {
       department_ids: selectDepart,
     }).then((res) => {
       if (res.success) {
-        toast.success(id ? "Update successfully!" : "Create successfully!");
+        toast.success(id ? "Cập nhật thành công!" : "Thêm mới thành công!");
         setContent("");
         onConfirm();
       } else {
@@ -102,12 +102,12 @@ export default function CreateNotification(props) {
   return (
     <Modal size="lg" isOpen={visible}>
       <ModalHeader>
-        {id ? "Edit notification" : "Create notification"}{" "}
+        {id ? "Cập nhật thông báo" : "Tạo mới thông báo"}
       </ModalHeader>
       <ModalBody>
         <div className="row">
           <div className="col-md-2 my-2">
-            <label>Title: </label>
+            <label>Tiêu đề: </label>
           </div>
           <div className="col-md-10 my-2">
             <div
@@ -130,7 +130,7 @@ export default function CreateNotification(props) {
         </div>
         <div className="row">
           <div className="col-md-2 my-2">
-            <label>Content: </label>
+            <label>Nội dung: </label>
           </div>
           <div className="col-md-10 my-2">
             <div
@@ -174,7 +174,7 @@ export default function CreateNotification(props) {
               onClose();
             }}
           >
-            Cancel
+            Huỷ
           </button>
           <Button
             className="bg-gradient-primary"
@@ -182,7 +182,7 @@ export default function CreateNotification(props) {
             style={{ marginLeft: "10px" }}
             onClick={() => onCreateNotification()}
           >
-            {id ? "Save" : "Post"}
+            {id ? "Cập nhật" : "Thêm mới"}
           </Button>
         </div>
       </ModalFooter>

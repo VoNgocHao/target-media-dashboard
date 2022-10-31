@@ -11,6 +11,7 @@ import Loading from "../Components/loading";
 import Confirm from "../Components/confirm";
 import { toast } from "react-toastify";
 import API from "../api";
+import { status_user } from "../constant";
 
 function Users() {
   document.title = "Nhân viên";
@@ -130,7 +131,7 @@ function Users() {
     });
     onResetPassNull();
     if (res.success) {
-      toast.success("Reset password successfully!");
+      toast.success("Reset password thành công!");
       getUsers(1, "");
     } else {
       toast.error(res.message);
@@ -142,7 +143,7 @@ function Users() {
     <section>
       <NavBar />
       <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <Header title="Users" />
+        <Header title="Danh sách nhân viên" />
         <div className="container-fluid py-2">
           {isLoading && <Loading />}
           <div className="row">
@@ -155,7 +156,7 @@ function Users() {
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Find name, email"
+                          placeholder="Tìm theo tên hoặc email"
                           value={inputSearch}
                           onChange={(e) => onChangeSearch(e.target.value)}
                         />
@@ -242,7 +243,9 @@ function Users() {
                               </td>
                               <td className="align-middle text-center text-sm">
                                 <span className="badge badge-sm bg-gradient-success">
-                                  {value.status}
+                                  {status_user.find(
+                                    (x) => x.value === value.status
+                                  ).label || ""}
                                 </span>
                               </td>
                               <td className="align-middle text-center">
@@ -305,15 +308,15 @@ function Users() {
       </main>
       <Confirm
         visible={!!idDeleted}
-        header={"Delete user"}
-        title={"Are you sure you want to deleted user?"}
+        header={"Xoá nhân viên"}
+        title={"Bạn muốn xoá nhân viên?"}
         onClose={onSetIdDeleteNull}
         onConfirm={onDeleteUser}
       />
       <Confirm
         visible={!!idResetKey}
-        header={"Reset user password"}
-        title={"Are you sure you want to reset password?"}
+        header={"Reset password"}
+        title={"Bạn muốn reset password?"}
         onClose={onResetPassNull}
         onConfirm={onResetPassword}
       />

@@ -114,7 +114,7 @@ function Post({ data, onEditPost, user_id }) {
                       <textarea
                         type="text"
                         className="form-control"
-                        placeholder="Write your comment"
+                        placeholder="Viết bình luận..."
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         maxLength={1000}
@@ -128,7 +128,7 @@ function Post({ data, onEditPost, user_id }) {
                   className="btn btn-outline-info btn-sm mt-2"
                   onClick={() => onSave(data.id)}
                 >
-                  Send
+                  Gửi
                 </button>
               </div>
             </div>

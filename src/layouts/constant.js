@@ -1,30 +1,30 @@
 export const status_user = [
   {
     value: "activity",
-    label: "Activity",
+    label: "Kích hoạt",
   },
   {
     value: "inactivity",
-    label: "Inactivity",
+    label: "Tạm khoá",
   },
 ];
 
 export const select_month = [
   {
     value: "1",
-    label: "Janurary",
+    label: "Tháng 1",
   },
-  { label: "February", value: "2" },
-  { label: "March", value: "3" },
-  { label: "April", value: "4" },
-  { label: "May", value: "5" },
-  { label: "June", value: "6" },
-  { label: "July", value: "7" },
-  { label: "August", value: "8" },
-  { label: "September", value: "9" },
-  { label: "October", value: "10" },
-  { label: "November", value: "11" },
-  { label: "December", value: "12" },
+  { label: "Tháng 2", value: "2" },
+  { label: "Tháng 3", value: "3" },
+  { label: "Tháng 4", value: "4" },
+  { label: "Tháng 5", value: "5" },
+  { label: "Tháng 6", value: "6" },
+  { label: "Tháng 7", value: "7" },
+  { label: "Tháng 8", value: "8" },
+  { label: "Tháng 9", value: "9" },
+  { label: "Tháng 10", value: "10" },
+  { label: "Tháng 11", value: "11" },
+  { label: "Tháng 12", value: "12" },
 ];
 
 export const select_target = [
@@ -82,5 +82,12 @@ export const password = "password";
 export const description = "description";
 export const url_avata = "url_avata";
 export const input_edit = [password, description, url_avata];
+export const header_edit = [
+  { value: phone, label: "số điện thoại" },
+  { value: password, label: "mật khẩu" },
+  { value: description, label: "giới thiệu" },
+  { value: "address", label: "địa chỉ" },
+  { value: url_avata, label: "ảnh đại diện" },
+];
 export const keyString =
   "7ab8b7f33db8ce8bbfc7589aebf03f577ab8b7f33db8ce8bbfc7589aebf03f577ab8b7f33db8ce8bbfc7589aebf03f577ab8b7f33db8ce8bbfc7589aebf03f57589aebf03f577ab8b7f33db8";

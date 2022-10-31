@@ -21,6 +21,7 @@ import * as Constant from "../constant";
 import { useParams } from "react-router-dom";
 import Loading from "../Components/loading";
 import { useQuery } from "react-query";
+import "dayjs/locale/fr";
 
 function UserCreate() {
   document.title = "Users";
@@ -49,7 +50,7 @@ function UserCreate() {
   const [isdelete, setIsdelete] = useState(false);
   let history = useHistory();
   const onToListView = () => {
-    history.push("/users");
+    history.push("/nhan-vien");
   };
 
   useEffect(() => {
@@ -113,15 +114,15 @@ function UserCreate() {
     );
     let isValue = true;
     if (errorValue.length > 0) {
-      toast.error("Value cannot be empty!");
+      toast.error("Giá trị không được để trống!");
       isValue = false;
     }
     if (!emailValidation(user.email)) {
-      toast.error("Email is incorrect!");
+      toast.error("Email không đúng!");
       isValue = false;
     }
     if (!phoneValidation(user.phone)) {
-      toast.error("Phone number is incorrect!");
+      toast.error("Số điện thoại không đúng!");
       isValue = false;
     }
 
@@ -142,9 +143,11 @@ function UserCreate() {
     const response = await API.createOrUpdateUser("/api/user-save.php", user);
 
     if (response.success) {
-      toast.success(id ? "Update successfully!" : "Create successfully!");
+      toast.success(
+        id ? "Cập nhật thành công!" : "Tạo mới nhân viên thành công!"
+      );
       if (!id) {
-        history.push("/users");
+        history.push("/nhan-vien");
       } else {
         getUserDetail();
       }
@@ -201,7 +204,9 @@ function UserCreate() {
       {isLoading && <Loading />}
       <NavBar />
       <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <Header title={!id ? "Create User" : "Edit User"} />
+        <Header
+          title={!id ? "Thêm mới nhân viên" : "Cập nhật thông tin nhân viên"}
+        />
         <div className="container-fluid py-2">
           <div className="row">
             <div className="row my-2">
@@ -211,7 +216,7 @@ function UserCreate() {
                   onClick={() => onToListView()}
                 >
                   <span className="mx-2">
-                    <Icon.ArrowLeft size={15} /> Back
+                    <Icon.ArrowLeft size={15} /> Trở về
                   </span>
                 </button>
               </div>
@@ -219,10 +224,10 @@ function UserCreate() {
             <div className="col-12">
               <div className="card my-1">
                 <div className="card-body pb-2">
-                  <h5>Personal informations</h5>
+                  <h5>Thông tin cá nhân</h5>
                   <div className="row my-2">
                     <div className="col-md-6 mb-md-0 mb-4">
-                      <label>Full Name: </label>
+                      <label>Họ và tên: </label>
                       <div
                         className={
                           isError && isEmpty(user.full_name)
@@ -243,7 +248,7 @@ function UserCreate() {
                       </div>
                     </div>
                     <div className="col-md-6 mb-md-0 mb-4">
-                      <label>Email Address: </label>
+                      <label>Email: </label>
                       <div
                         className={
                           isError && isEmpty(user.email)
@@ -266,7 +271,7 @@ function UserCreate() {
                   </div>
                   <div className="row my-2">
                     <div className="col-md-12">
-                      <label>Address: </label>
+                      <label>Địa chỉ: </label>
                       <div
                         className={
                           isError && isEmpty(user.address)
@@ -289,7 +294,7 @@ function UserCreate() {
                   </div>
                   <div className="row my-2">
                     <div className="col-md-6 mb-md-0 mb-4">
-                      <label>Birth Date: </label>
+                      <label>Ngày sinh: </label>
                       <div
                         className={
                           isError && isEmpty(user.birth_date)
@@ -297,7 +302,10 @@ function UserCreate() {
                             : "input-group input-group-outline"
                         }
                       >
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <LocalizationProvider
+                          dateAdapter={AdapterDayjs}
+                          adapterLocale={"fr"}
+                        >
                           <DatePicker
                             value={user.birth_date || ""}
                             onChange={(newValue) => {
@@ -316,7 +324,7 @@ function UserCreate() {
                       </div>
                     </div>
                     <div className="col-md-6 mb-md-0 mb-4">
-                      <label>Phone: </label>
+                      <label>Số điện thoại: </label>
                       <div
                         className={
                           isError && isEmpty(user.phone)
@@ -339,7 +347,7 @@ function UserCreate() {
                   </div>
                   <div className="row my-2">
                     <div className="col-md-6 mb-md-0 mb-4">
-                      <label>Department: </label>
+                      <label>Phòng ban: </label>
                       <div
                         className={
                           isError && user.department_id < 1
@@ -356,7 +364,7 @@ function UserCreate() {
                             setUser({ ...newUser });
                           }}
                         >
-                          <option value={0}>-- Select department --</option>
+                          <option value={0}>-- Chọn phòng ban --</option>
                           {departments.map((value, index) => {
                             return (
                               <option value={value.id} key={index}>
@@ -368,7 +376,7 @@ function UserCreate() {
                       </div>
                     </div>
                     <div className="col-md-6 mb-md-0 mb-4">
-                      <label>Positions: </label>
+                      <label>Vị trí: </label>
                       <div
                         className={
                           isError && user.position_id < 1
@@ -385,7 +393,7 @@ function UserCreate() {
                             setUser({ ...newUser });
                           }}
                         >
-                          <option value={0}>-- Select position --</option>
+                          <option value={0}>-- Chọn vị trí --</option>
 
                           {positions.map((value, index) => {
                             return (
@@ -400,7 +408,7 @@ function UserCreate() {
                   </div>
                   <div className="row my-2">
                     <div className="col-md-6 mb-md-0 mb-4">
-                      <label>Start Working Date: </label>
+                      <label>Ngày vào làm: </label>
                       <div
                         className={
                           isError && isEmpty(user.working_date)
@@ -408,7 +416,10 @@ function UserCreate() {
                             : "input-group input-group-outline"
                         }
                       >
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <LocalizationProvider
+                          dateAdapter={AdapterDayjs}
+                          adapterLocale={"fr"}
+                        >
                           <DatePicker
                             value={user.working_date || ""}
                             onChange={(newValue) => {
@@ -456,7 +467,7 @@ function UserCreate() {
                   </div>
                   <div className="row my-2">
                     <div className="col-md-12">
-                      <label>Introduce: </label>
+                      <label>Giới thiệu bản thân: </label>
                       <div className="input-group input-group-outline">
                         <textarea
                           type="text"
@@ -475,7 +486,7 @@ function UserCreate() {
                 </div>
                 <div className="card-body pb-2" hidden={!id}>
                   <div className="d-flex justify-content-between">
-                    <h5>Documents</h5>
+                    <h5>Tài liệu</h5>
                     <button
                       className="badge badge-sm btn-background-violet float-right"
                       onClick={() => {
@@ -497,20 +508,18 @@ function UserCreate() {
                           <thead>
                             <tr>
                               <th className="text-uppercase text-xxs font-weight-bolder">
-                                File Name
+                                Tên File
                               </th>
                               <th className="text-uppercase text-xxs font-weight-bolder ps-2">
-                                Uploaded Time
+                                Ngày cập nhật
                               </th>
                               <th className="text-uppercase text-xxs font-weight-bolder ps-2">
-                                Uploaded By
+                                Nhân viên upload
                               </th>
                               <th
                                 className="text-center text-uppercase text-xxs font-weight-bolder"
                                 style={{ width: "100px" }}
-                              >
-                                Action
-                              </th>
+                              ></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -572,7 +581,10 @@ function UserCreate() {
                         onClick={() => onSetIsConfirm()}
                       >
                         <span className="mx-2">
-                          <Icon.Plus size={15} /> {!id ? " Create " : " Save "}
+                          <Icon.Plus size={15} />{" "}
+                          {!id
+                            ? " Thêm mới nhân viên "
+                            : " Cập nhật thông tin "}
                         </span>
                       </button>
                     </div>
@@ -587,19 +599,17 @@ function UserCreate() {
       </main>
       <Confirm
         visible={isConfirm}
-        header={!id ? "Create user" : "Update user"}
+        header={!id ? "Thêm mới nhân viên" : "Cập nhật thông tin nhân viên"}
         title={
-          !id
-            ? "Are you sure you want to create user?"
-            : "Are you sure you want to update user?"
+          !id ? "Xác nhận thêm mới nhân viên?" : "Xác nhận cập nhật nhân viên?"
         }
         onClose={onSetIsConfirm}
         onConfirm={onCreateOrUpdateUser}
       />
       <Confirm
         visible={isdelete}
-        header={"Delete document"}
-        title={"Are you sure you want to deleted document?"}
+        header={"Xoá tài liệu"}
+        title={"Bạn muốn xoá tài liệu?"}
         onClose={onSetIsConfirm}
         onConfirm={onConfirmDelete}
       />

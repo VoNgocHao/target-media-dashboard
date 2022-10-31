@@ -76,7 +76,7 @@ function Notification() {
     ).then((response) => response.json());
     onSetIdDeleteNull();
     if (res.success) {
-      toast.success("Deleted successfully!");
+      toast.success("Xoá thành công!");
       getNotifications(1, "");
     } else {
       toast.error(res.message);
@@ -98,7 +98,7 @@ function Notification() {
     <section>
       <NavBar />
       <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <Header title="Notification" />
+        <Header title="Thông báo" />
         <div className="container-fluid py-2">
           {isLoading && <Loading />}
 
@@ -110,7 +110,7 @@ function Notification() {
                   onClick={() => onOpenCreate()}
                 >
                   <span className="px-2">
-                    <Icon.Plus size={15} /> Create
+                    <Icon.Plus size={15} /> Tạo thông báo
                   </span>
                 </button>
               </div>
@@ -123,17 +123,15 @@ function Notification() {
                       <thead>
                         <tr>
                           <th className="text-uppercase text-xxs font-weight-bolder">
-                            Title
+                            Tiêu đề
                           </th>
                           <th className="text-uppercase text-xxs font-weight-bolder ps-2">
-                            Content
+                            Nội dung
                           </th>
                           <th className="text-uppercase text-xxs font-weight-bolder ps-2">
-                            Created at
+                            Ngày tạo
                           </th>
-                          <th className="text-center text-uppercase text-xxs font-weight-bolder">
-                            Action
-                          </th>
+                          <th className="text-center text-uppercase text-xxs font-weight-bolder"></th>
                         </tr>
                       </thead>
                       <tbody>

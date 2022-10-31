@@ -31,7 +31,7 @@ function Permissions() {
     <section>
       <NavBar />
       <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-        <Header title="Permissions" />
+        <Header title="Phân quyền" />
         <div className="container-fluid py-2">
           <div className="row">
             <div className="col-12">
@@ -42,7 +42,7 @@ function Permissions() {
                       <thead>
                         <tr>
                           <th className="text-uppercase text-xxs font-weight-bolder">
-                            Deparments
+                            Phòng ban
                           </th>
                           <th className="text-secondary opacity-7"></th>
                         </tr>

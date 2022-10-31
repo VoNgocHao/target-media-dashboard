@@ -16,7 +16,7 @@ export default function Confirm(props) {
               onClose();
             }}
           >
-            Cancel
+            Huỷ
           </button>
           <Button
             className="bg-gradient-primary"
@@ -24,7 +24,7 @@ export default function Confirm(props) {
             style={{ marginLeft: "10px" }}
             onClick={() => onConfirm()}
           >
-            Confirm
+            Xác nhận
           </Button>
         </div>
       </ModalFooter>

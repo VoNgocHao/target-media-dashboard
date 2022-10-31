@@ -67,7 +67,7 @@ export function removeAccents(str) {
 }
 
 export function isEmpty(val) {
-  return val === undefined || val == null || val.length <= 0 ? true : false;
+  return val === undefined || val == null || val.length < 1 ? true : false;
 }
 
 export function postUrlParam(url, param) {
@@ -107,11 +107,11 @@ export function timePost(datetime) {
   var returnValue = datetime;
 
   if (hours < 24 && hours > 0) {
-    returnValue = hours + " hours ago";
+    returnValue = hours + " giờ trước";
   } else if (minutes !== 0) {
-    returnValue = minutes + " minutes ago";
+    returnValue = minutes + " phút trước";
   } else if (seconds < 60) {
-    returnValue = "Now";
+    returnValue = "Mới";
   }
   return returnValue;
 }

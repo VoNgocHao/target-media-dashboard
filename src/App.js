@@ -12,6 +12,7 @@ import HomePage from "./layouts/home-page";
 import UserCreate from "./layouts/Users/create-edit";
 import Login from "./layouts/login";
 import Permissions from "./layouts/System/permissions";
+import LeaveRequest from "./layouts/Users/leave-request";
 
 function App() {
   return (
@@ -31,6 +32,9 @@ function App() {
         </Route>
         <Route path="/profile">
           <Profile />
+        </Route>
+        <Route path="/leave">
+          <LeaveRequest />
         </Route>
         <Route path="/kpi">
           <KpiPage />

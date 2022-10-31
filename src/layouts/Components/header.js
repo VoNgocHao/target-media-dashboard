@@ -52,7 +52,9 @@ function Header({ title }) {
   const getNotificationUnread = async () => {
     await API.getAPIData("/api/notifications-unread-user.php").then((res) => {
       if (res.success) {
-        setNotifications(res.data);
+        setNotifications([...res.data]);
+      } else {
+        setNotifications([]);
       }
     });
   };
@@ -106,7 +108,7 @@ function Header({ title }) {
                   className="d-sm-inline d-none cursor-pointer"
                   onClick={() => onIsQuesLogout()}
                 >
-                  Sign Out
+                  Đăng xuất
                 </span>
               </a>
             </li>
@@ -125,7 +127,7 @@ function Header({ title }) {
               {openNotification && (
                 <ul className="dropdown-menu dropdown-menu-end px-2 py-3 notifications-po">
                   <div>
-                    <h6 className="mx-2">Notifications</h6>
+                    <h6 className="mx-2">Thông báo</h6>
                     <div
                       className="close-x-navbar-dropdown"
                       onClick={() => onOpenNotification()}
@@ -178,8 +180,8 @@ function Header({ title }) {
         visible={isQuesLogout}
         onClose={onIsQuesLogout}
         onConfirm={onLogout}
-        title={"Are you sure you want to logout?"}
-        header={"Logout"}
+        title={"Bạn muốn thoát tài khoản?"}
+        header={"Đăng xuất tài khoản"}
       />
       <ReadNotification
         visible={isReadNotifi}

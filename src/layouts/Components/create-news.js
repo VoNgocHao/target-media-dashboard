@@ -47,11 +47,11 @@ export default function CreateNews(props) {
 
   return (
     <Modal size="lg" isOpen={visible}>
-      <ModalHeader>{id ? "Edit news" : "Create news"} </ModalHeader>
+      <ModalHeader>{id ? "Cập nhật" : "Tạo mới"} </ModalHeader>
       <ModalBody>
         <ReactQuill
           theme="snow"
-          placeholder="Write something..."
+          placeholder="Nội dung..."
           value={quill}
           modules={modules}
           formats={formats}
@@ -66,7 +66,7 @@ export default function CreateNews(props) {
               onClose();
             }}
           >
-            Cancel
+            Huỷ
           </button>
           <Button
             className="bg-gradient-primary"
@@ -74,7 +74,7 @@ export default function CreateNews(props) {
             style={{ marginLeft: "10px" }}
             onClick={() => onCreateNews()}
           >
-            {id ? "Save" : "Post"}
+            {id ? "Cập nhật" : "Đăng tin"}
           </Button>
         </div>
       </ModalFooter>
